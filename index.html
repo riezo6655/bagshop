@@ -4,27 +4,21 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Shop</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans&display=swap" rel="stylesheet">
 </head>
 <body>
-
-  
-  <div class="intro"></div>
   <canvas id="c"></canvas>
+  <div class="intro"></div>
   <div class="container">
     <h1 class="suptitle">Standard Bag</h1>
     <h2 class="subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </h2>
-    <a class="btn"><input id="elem" type="button" value="change texture"></a></div>
-    
+    <a class="btn"><input id="elem" type="button" value="change texture"></a>
+  </div>
+  <div class="features"></div>
   <script type="module">
-      
-  // Three.js - Load .OBJ ?
-  // from https://threejsfundamentals.org/threejs/threejs-load-obj-no-materials.html
-  
-
   import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/build/three.module.js';
   
   import {OrbitControls} from 'https://threejsfundamentals.org/threejs/resources/threejs/r125/examples/jsm/controls/OrbitControls.js';
@@ -33,24 +27,8 @@
   import {GUI} from 'https://threejsfundamentals.org/3rdparty/dat.gui.module.js';
 
 
-  // const params = {
-	// 			projection: 'normal',
-	// 			autoRotate: true,
-	// 			reflectivity: 1.0,
-	// 			background: false,
-	// 			exposure: 1.0,
-	// 			gemColor: 'Green'
-  //     };
   let firstColor = true;   
   let secondColor = false; 
-  // let wrapModes = {
-  //     firstColor,
-  //     secondColor,
-  //     ClampToEdgeWrapping: new Boolean(true),
-  //     'ClampToEdgeWrapping': 0,
-  //     'RepeatWrapping': 1,
-  //     'MirroredRepeatWrapping': 2,
-  //   };     
 
   const canvas = document.querySelector('#c');
   const renderer = new THREE.WebGLRenderer({
@@ -58,21 +36,13 @@
     alpha: true,
   });
 
-
-
-    
   function main() {
-    const loader = new THREE.TextureLoader();
-    const texture = loader.load('https://threejsfundamentals.org/threejs/resources/images/wall.jpg');
-    
-
-    
-
     const canvas = document.querySelector('#c');
     const renderer = new THREE.WebGLRenderer({canvas});
   
+    // Настройка камеры и освещения
     const fov = 45;
-    const aspect = 2;  // the canvas default
+    const aspect = 2; 
     const near = 0.1;
     const far = 100;
     const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
@@ -81,42 +51,7 @@
     const controls = new OrbitControls(camera, canvas);
     controls.target.set(0, 7, 0);
     controls.update();
-  
     const scene = new THREE.Scene();
-    // scene.background = new THREE.Color('black');
-  
-    // {
-      // const planeSize = 40;
-      
-  
-      // const loader = new THREE.TextureLoader();
-      // const texture = loader.load('checker2.png');
-      
-      // texture.wrapS = THREE.RepeatWrapping;
-      // texture.wrapT = THREE.RepeatWrapping;
-      // texture.magFilter = THREE.NearestFilter;
-      // const repeats = planeSize / 2;
-      // texture.repeat.set(repeats, repeats);
-  
-      // const planeGeo = new THREE.PlaneGeometry(planeSize, planeSize);
-      // const planeMat = new THREE.MeshPhongMaterial({
-      //   map: texture,
-      //   side: THREE.DoubleSide,
-    //   // });
-    //   const mesh = new THREE.Mesh(planeGeo, planeMat);
-    //   mesh.rotation.x = Math.PI * -.5;
-    //   scene.add(mesh);
-    // }
-
-
-
-
-       // .onChange( function () {
-
-      //   color.material.set( API.color ).convertSRGBToLinear();
-      //   render();
-
-      // } );  
 
     class ColorGUIHelper {
     constructor(object, prop) {
@@ -129,45 +64,24 @@
     set value(hexString) {
       this.object[this.prop].set(hexString);
     }
-  }
+    }
     
     {{
-    const gui = new GUI();
-    let color = 0xffffff;
-    
-    const intensity = 2;
+      const gui = new GUI();
+      let color = 0xffffff;
+      const intensity = 2;
+      
+      let light = new THREE.DirectionalLight(color);
+      gui.add(light, 'intensity', 0, 2, 0.01);
+      gui.addColor(new ColorGUIHelper(light, 'color'), 'value').name('color');
 
-    // const gui = new GUI();
-    
-      //   color.material.set( API.color ).convertSRGBToLinear();
-    
-    let light = new THREE.DirectionalLight(color);
-    gui.add(light, 'intensity', 0, 2, 0.01);
-    gui.addColor(new ColorGUIHelper(light, 'color'), 'value').name('color');
+      light.position.set(10, 10, 10);
+      scene.add(light);
+    }}
 
-    light.position.set(10, 10, 10);
-    scene.add(light);
-    
-    // gui.addColor( API, 'color' )
-  }}
-  
-    // {
-    //   const color = 0xFFFFFF;
-    //   const intensity = 1;
-    //   const light = new THREE.DirectionalLight(color, intensity);
-    //   light.position.set(0, 10, 0);
-    //   light.target.position.set(-5, 0, 0);
-    //   scene.add(light);
-    //   scene.add(light.target);
-    // }
-  
-
-
+    // Загрузка модели и текстур
     const objLoader = new OBJLoader();
     elem.onclick = function() {
-    
-    
-    
     const mtlLoader = new MTLLoader();
     if (firstColor) {
     mtlLoader.load('https://raw.githubusercontent.com/REzoa1/1111111111111.fds-fdsfld-sffp-spfs.sdf-pfindoorplant_02/main/bag/buggi3.mtl', (mtl) => {
@@ -197,7 +111,6 @@
     
     };
     {
-      
       objLoader.load('https://raw.githubusercontent.com/REzoa1/1111111111111.fds-fdsfld-sffp-spfs.sdf-pfindoorplant_02/main/bag/buggi3.obj', (root) => {
         scene.add(root);
         
@@ -205,82 +118,8 @@
       
     }
     
-  
-    
-    
-    
-    // const mtlLoader2 = new MTLLoader();
-    // mtlLoader2.load('https://raw.githubusercontent.com/REzoa1/1111111111111.fds-fdsfld-sffp-spfs.sdf-pfindoorplant_02/main/bag/buggi4.mtl', (mtl) => {
-    //   mtl.preload();
-    //   const objLoader = new OBJLoader();
-    //   objLoader.setMaterials(mtl);
-    //   objLoader.load('https://raw.githubusercontent.com/REzoa1/1111111111111.fds-fdsfld-sffp-spfs.sdf-pfindoorplant_02/main/bag/buggi4.obj', (root) => {
-    //     scene.add(root);
-    //   });
-    // });
 
-    
-    
-   
-
-
-
-
-    // class StringToNumberHelper {
-    // constructor(obj, prop) {
-    //   this.obj = obj;
-    //   this.prop = prop;
-    // }
-    // get value() {
-    //   return this.obj[this.prop];
-    // }
-    // set value(v) {
-    //   this.obj[this.prop] = parseFloat(v);
-    // }
-    // }
-
-    
-
-    // function updateTexture() {
-    //   texture.needsUpdate = true;
-    // }
-
-    
-    // gui.add(new StringToNumberHelper(texture, 'wrapS'), 'value', wrapModes)
-    //   .name('texture.wrapS')
-    //   .onChange(updateTexture);
-
-    
-    // const gui = new GUI();
-    // gui.addColor( API, 'color' )
-    
-
-      // .listen()
-      // .onChange( function () {
-
-      //   color.material.set( API.color ).convertSRGBToLinear();
-      //   render();
-
-      // } );  
-
-    // gui.add( params, 'gemColor', [ 'Blue', 'Green', 'Red', 'White', 'Black' ] );
-    //   gui.open();
-      
-    // gui.add(new StringToNumberHelper(texture, 'wrapT'), 'value', wrapModes)
-    //   .name('texture.wrapT')
-    //   .onChange(updateTexture);
-    // gui.add(texture.repeat, 'x', 0, 5, .01).name('texture.repeat.x');
-    // gui.add(texture.repeat, 'y', 0, 5, .01).name('texture.repeat.y');
-    // gui.add(texture.offset, 'x', -2, 2, .01).name('texture.offset.x');
-    // gui.add(texture.offset, 'y', -2, 2, .01).name('texture.offset.y');
-    // gui.add(texture.center, 'x', -.5, 1.5, .01).name('texture.center.x');
-    // gui.add(texture.center, 'y', -.5, 1.5, .01).name('texture.center.y');
-    // gui.add(new DegRadHelper(texture, 'rotation'), 'value', -360, 360)
-    //   .name('texture.rotation');
-
-    
-    
-    
+    // Рендер
     function resizeRendererToDisplaySize(renderer) {
       const canvas = renderer.domElement;
       const width = canvas.clientWidth;
@@ -291,31 +130,23 @@
       }
       return needResize;
     }
-  
+
+    
     function render() {
-  
       if (resizeRendererToDisplaySize(renderer)) {
         const canvas = renderer.domElement;
         camera.aspect = canvas.clientWidth / canvas.clientHeight;
         camera.updateProjectionMatrix();
       }
-  
       renderer.render(scene, camera);
-  
       requestAnimationFrame(render);
     }
   
     requestAnimationFrame(render);
   }
-
-
-  
-  
   main();
   
   </script>
-  
-  <div class="features"></div>
   
 </body>
 </html>
